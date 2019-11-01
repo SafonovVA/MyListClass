@@ -51,32 +51,38 @@ int main() {
     fourth.Show();
 
     first.sort();
-  /*  first.Show();
-
-    first.reverse();
+    cout << "\nfirst" << endl;
     first.Show();
 
+    first.reverse();
+    cout << "\nfirst" << endl;
+    first.Show();
+
+    cout << "\nSomeNew" << endl;
     size = fourth.size();
     for (int i = 0; i < size; i++) {
         int value = fourth[i];
         cout << value << " " << endl;
     }
-
+    cout << "\nSomeNew2 first" << endl;
+    first.Show();
     first.DeleteAt(3);
     first.Show();
-
-    first.InsertAt(4, 4);
+    cout << "\nSomeNew3 first" << endl;
+    first.InsertAt(4, 99);
     first.Show();
-
-    first.DeleteAll();
+    cout << "\nSomeNew3 first" << endl;
+    //first.DeleteAll();
     first.Show();
-
+    cout << "\nSomeNew3 first + third" << endl;
+    first.Show();
+    third.Show();
     first.splice(third);
     first.Show();
     first.splice(fourth);
     first.Show();
 
-    size_t result = first.Find(10);
+    /*size_t result = first.Find(10);
     if (result != 0)
         cout << "The number ten is in position: " << result << endl;
     else

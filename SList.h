@@ -169,7 +169,7 @@ public:
         }
         count++;
     }
-    /*
+
     T front() {// возвращает первое значение
         return first->Data;
     }
@@ -177,7 +177,7 @@ public:
     T back() {// возвращает последнее значение
         return last->Data;
     }
-     */
+
     T DeleteFromHead() {// удаление первого элемента
         T val = first->Data;
         first = first->next;
@@ -205,11 +205,16 @@ public:
     }
 
     void Show() {// отображение всех элементов
-        for(this->begin(); this->end(); this->next()) {
-            cout << "[" << iterator << "] = " << this->get();
+        if (count == 0) {
+            cout << "List is Empty\n";
         }
-        cout << endl;
-        iterator = 0;
+        else {
+            for (this->begin(); this->end(); this->next()) {
+                cout << "[" << iterator << "] = " << this->get() << ", ";
+            }
+            cout << endl;
+            iterator = 0;
+        }
     }
 
     size_t size() {// количество элементов
@@ -244,7 +249,7 @@ public:
             return value->Data;
         }
     }
-/*
+
     void InsertAt(size_t pos, const T &Data) {// вставка в указанную позицию
         if (pos == 0) {
             this->AddToHead(Data);
@@ -260,8 +265,11 @@ public:
                 prevValue = value;
                 value = value->next;
             }
-            prevValue->next = value;
-            value->Data = Data;
+            data<T> *now = new data<T>;
+            now->Data = Data;
+            now->next = value;
+            prevValue->next = now;
+            count++;
         }
     }
 
@@ -282,6 +290,7 @@ public:
             }
             prevValue->next = value->next;
             value = nullptr;
+            count--;
         }
     }
 
@@ -314,12 +323,42 @@ public:
             }
         }
         return now;
-    }*/
+    }
 
 
-    /*void reverse();								// переворот списка
+    void reverse(){// переворот списка
+        if (typeid(T) == typeid(int) ||
+            typeid(T) == typeid(float) ||
+            typeid(T) == typeid(double) ||
+            typeid(T) == typeid(unsigned long int) ||
+            typeid(T) == typeid(long int) ||
+            typeid(T) == typeid(unsigned int) ||
+            typeid(T) == typeid(unsigned short int) ||
+            typeid(T) == typeid(short int) ||
+            typeid(T) == typeid(long long))
+        {
+            T *array = new T[count];
+            data<T> *time = first;
+            for (begin(); end(); next()) {
+                array[iterator] = time->Data;
+                time = time->next;
+            }
+            size_t size = count;
+            DeleteAll();
 
-    */
+            T x;
+            for(int i = 0; i < size - i - 1; i++) {
+                x = array[i];
+                array[i] = array[size - i - 1];
+                array[size - i - 1] = x;
+            }
+
+            for (begin(); iterator < size; next()) {
+                AddToTail(array[iterator]);
+            }
+        }
+    }
+
     void sort(){// сортирует элементы
         if (typeid(T) == typeid(int) ||
             typeid(T) == typeid(float) ||
@@ -331,73 +370,75 @@ public:
             typeid(T) == typeid(short int) ||
             typeid(T) == typeid(long long))
         {
-
-        }
-        else if (typeid(T) == typeid(string)) {
-
+            T *array = new T[count];
+            data<T> *time = first;
+            for (begin(); end(); next()) {
+                array[iterator] = time->Data;
+                time = time->next;
+            }
+            size_t size = count;
+            DeleteAll();
+            for (size_t i = 1; i < size; i++) {
+                for (int j = i, max; j > 0; j--) {
+                    if (array[j] < array[j - 1]) {
+                        max = array[j];
+                        array[j] = array[j - 1];
+                        array[j - 1] = max;
+                    }
+                }
+            }
+            for (begin(); iterator < size; next()) {
+                AddToTail(array[iterator]);
+            }
         }
     }
 
-    /*
-void vstavka(int array[], int size) {
-	for (int i = 1; i < size; i++) {
-		for (int j = i, max; j > 0; j--) {
-			if (array[j] < array[j - 1]) {
-				max = array[j];
-				array[j] = array[j - 1];
-				array[j - 1] = max;
-			}
-		}
-	}
-}*/
+    void splice(const SList<T>& Data){// перемещает элементы из другого list
+        data<T> *time = Data.first;
+        iterator = count;
+        count += Data.count;
+        last->next = time;
+        last = time;
 
+        if (Data.count != 0) {
+            for(; end(); next()) {
+                data<T> *value = new data<T>;
+                value->Data = time->Data;
+                value->next = time->next;
+                time = time->next;
+                if (iterator == 0) {
+                    first = value;
+                }
+                else if (iterator + 1 == count) {
+                    last = value;
+                }
+            }
+        }
 
+     }
 
-    /*
-    void splice(const SList<T>& Data);*/				// перемещает элементы из другого list
+     /*count = Data.count;
+        iterator = Data.iterator;
+        if (count != 0) {
+            data<T> *time = Data.first;
+            for (begin(); end(); next()) {
+                data<T> *value = new data<T>;
+                value->Data = time->Data;
+                value->next = time->next;
+                time = time->next;
+                if (iterator == 0) {
+                    first = value;
+                }
+                else if (iterator + 1 == count) {
+                    last = value;
+                }
+            }
+        }*/
 
-    ~SList() {
+    ~SList() {// деструктор
         delete first;
         delete last;
-    }								// деструктор
+    }
 };
-
-/*
- * void PopBack(){
-            if(this->phead!=0){
-                //Указатель на последний элемент
-                CNode * pNode= this->phead;
-                //Указатель на пред последний элемент
-                CNode * pPrev=this->phead;
-                while(pNode->pNext){
-                    pPrev=pNode;
-                    pNode=pNode->pNext;
-                }
-                //Удаляем последний
-                delete pNode;
-                //Обноляем последний pNext
-                pPrev->pNext=0;
-            }
-        }
-        void Insert(int index,CNode * pNew){
-            CNode * pNode=this->phead;
-            CNode * pTmp=this->phead;
-            for(int i=0;i<index-1;i++){
-                pNode=pNode->pNext;
-                pTmp=pNode->pNext;
-            }
-            pNode->pNext=pNew;
-            pNew->pNext=pTmp;
-        }
- *
- * struct data
-{
-    T Data;		// Данные
-    data<T> *next;	// Адрес следующего элемента списка
-};*/
-/*data<T> *first;								// Адрес первого элемента списка
-data<T> *last;								// Адрес последнего элемента списка
-size_t count;								// Количество элементов в списке
-size_t iterator;*/
 
 #endif //LIST_SLIST_H

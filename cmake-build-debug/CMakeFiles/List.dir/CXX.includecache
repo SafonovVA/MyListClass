@@ -6,12 +6,10 @@
 
 #IncludeRegexTransform: 
 
-/home/dev2/CLionProjects/List/SList.cpp
-SList.h
-/home/dev2/CLionProjects/List/SList.h
-
 /home/dev2/CLionProjects/List/SList.h
 iostream
+-
+string
 -
 ctime
 -
