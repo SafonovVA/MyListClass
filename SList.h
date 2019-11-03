@@ -31,65 +31,35 @@ public:
         count = 0;
         iterator = 0;
     }
-    SList(const SList<T> &Data) {// конструктор копирования
-        count = Data.count;
-        iterator = Data.iterator;
-        if (count != 0) {
-            data<T> *time = Data.first;
-            for (begin(); end(); next()) {
-                data<T> *value = new data<T>;
-                value->Data = time->Data;
-                value->next = time->next;
-                time = time->next;
-                if (iterator == 0) {
-                    first = value;
-                }
-                else if (iterator + 1 == count) {
-                    last = value;
-                }
-            }
+
+    SList(const SList<T> &Data) : SList() {// конструктор копирования
+        size_t size = Data.count;
+        data<T> *time = Data.first;
+        for (size_t i = 0; i < size; i++) {
+            AddToTail(time->Data);
+            time = time->next;
         }
     }
 
     SList(SList<T> &&Data) noexcept {// конструктор перемещения
         count = Data.count;
         iterator = Data.iterator;
-        if (count != 0) {
-            data<T> *time = Data.first;
-            for (begin(); end(); next()) {
-                data<T> *value = new data<T>;
-                value->Data = time->Data;
-                value->next = time->next;
-                time = time->next;
-                if (iterator == 0) {
-                    first = value;
-                }
-                else if (iterator + 1 == count) {
-                    last = value;
-                }
-            }
-        }
+        first = Data.first;
+        last = Data.last;
         Data.first = nullptr;
         Data.last = nullptr;
     }
 
     SList<T> &operator=(const SList<T> &Data) {// оператор равно копированием
-        count = Data.count;
-        iterator = Data.iterator;
-        if (count != 0) {
-            data<T> *time = Data.first;
-            for (begin(); end(); next()) {
-                data<T> *value = new data<T>;
-                value->Data = time->Data;
-                value->next = time->next;
-                time = time->next;
-                if (iterator == 0) {
-                    first = value;
-                }
-                else if (iterator + 1 == count) {
-                    last = value;
-                }
-            }
+        first = nullptr;
+        last = nullptr;
+        count = 0;
+        iterator = 0;
+        size_t size = Data.count;
+        data<T> *time = Data.first;
+        for (size_t i = 0; i < size; i++) {
+            AddToTail(time->Data);
+            time = time->next;
         }
         return *this;
     }
@@ -97,21 +67,8 @@ public:
     SList<T> &operator=(SList<T> &&Data) noexcept {// оператор равно перемещением
         count = Data.count;
         iterator = Data.iterator;
-        if (count != 0) {
-            data<T> *time = Data.first;
-            for (begin(); end(); next()) {
-                data<T> *value = new data<T>;
-                value->Data = time->Data;
-                value->next = time->next;
-                time = time->next;
-                if (iterator == 0) {
-                    first = value;
-                }
-                else if (iterator + 1 == count) {
-                    last = value;
-                }
-            }
-        }
+        first = Data.first;
+        last = Data.last;
         Data.first = nullptr;
         Data.last = nullptr;
         return *this;
@@ -187,7 +144,7 @@ public:
 
     T DeleteFromTail() {// удаление последнего элемента
         data<T> *value = first;
-        for(this->begin(); iterator < count - 2; this->next()) {
+        for(begin(); iterator < count - 2; next()) {
             value = value->next;
         }
         T val = value->Data;
@@ -202,6 +159,7 @@ public:
         count = 0;
         first = nullptr;
         last = nullptr;
+        iterator = 0;
     }
 
     void Show() {// отображение всех элементов
@@ -231,6 +189,7 @@ public:
 
     bool next() {// Перемещает итератор на следующий элемент
         iterator++;
+        return iterator != count;
     }
 
     T &get() {// Получить значение по текущей позиции итератора
@@ -241,8 +200,7 @@ public:
             return last->Data;
         }
         else {
-            data<T> *value = new data<T>;
-            value = first;
+            data<T> *value = first;
             for(size_t i = 1; i <= iterator; i++) {
                 value = value->next;
             }
@@ -296,15 +254,13 @@ public:
 
     size_t Find(const T &Data) {// поиск элемента (0 в случае неудачи)
         data<T> *value = first;
-        if (value->Data == Data) {
-            return 0;
-        }
         size_t now = 0;
-        while(value->next) {
+        for (begin(); end(); next()) {
             now++;
             if (value->Data == Data) {
-                return now;
+                return iterator;
             }
+            value = value->next;
         }
         return 0;
     }
@@ -312,15 +268,12 @@ public:
     size_t FindAndReplace(const T &Data, const T &replData) {// поиск и замена всех элементов
         data<T> *value = first;
         size_t now = 0;
-        if (value->Data == Data) {
-            value->Data = replData;
-            now++;
-        }
-        while(value->next) {
+        for (begin(); end(); next()) {
             if (value->Data == Data) {
                 value->Data = replData;
                 now++;
             }
+            value = value->next;
         }
         return now;
     }
@@ -393,47 +346,19 @@ public:
         }
     }
 
-    void splice(const SList<T>& Data){// перемещает элементы из другого list
-        data<T> *time = Data.first;
-        iterator = count;
-        count += Data.count;
-        last->next = time;
-        last = time;
-
-        if (Data.count != 0) {
-            for(; end(); next()) {
-                data<T> *value = new data<T>;
-                value->Data = time->Data;
-                value->next = time->next;
-                time = time->next;
-                if (iterator == 0) {
-                    first = value;
-                }
-                else if (iterator + 1 == count) {
-                    last = value;
-                }
-            }
+    void splice(SList<T>& Data){// перемещает элементы из другого list
+        if (count == 0) {
+            count = Data.count;
+            first = Data.first;
         }
-
+        else {
+            count += Data.count;
+            last->next = Data.first;
+        }
+        last = Data.last;
+        Data.DeleteAll();
      }
 
-     /*count = Data.count;
-        iterator = Data.iterator;
-        if (count != 0) {
-            data<T> *time = Data.first;
-            for (begin(); end(); next()) {
-                data<T> *value = new data<T>;
-                value->Data = time->Data;
-                value->next = time->next;
-                time = time->next;
-                if (iterator == 0) {
-                    first = value;
-                }
-                else if (iterator + 1 == count) {
-                    last = value;
-                }
-            }
-        }*/
 
     ~SList() {// деструктор
         delete first;

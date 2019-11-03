@@ -6,7 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/dev2/CLionProjects/List/SList.h
+/home/vladimir/CLionProjects/MyListClass/SList.cpp
+SList.h
+/home/vladimir/CLionProjects/MyListClass/SList.h
+
+/home/vladimir/CLionProjects/MyListClass/SList.h
 iostream
 -
 string
@@ -14,11 +18,11 @@ string
 ctime
 -
 
-/home/dev2/CLionProjects/List/main.cpp
+/home/vladimir/CLionProjects/MyListClass/main.cpp
 iostream
 -
 ctime
 -
 SList.h
-/home/dev2/CLionProjects/List/SList.h
+/home/vladimir/CLionProjects/MyListClass/SList.h
 
